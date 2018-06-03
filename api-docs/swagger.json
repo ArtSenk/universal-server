@@ -1,0 +1,17 @@
+{
+  "info": {
+    "title": "",
+    "version": "0.0.1",
+    "description": ""
+  },
+  "host": "",
+  "schemes": ["https"],
+  "basePath": "/",
+  "swagger": "2.0",
+  "paths": {},
+  "definitions": {},
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}

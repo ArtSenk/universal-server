@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+package-lock.json
+npm-debug.log
+err.log
+out.log
+/api/config/config.yml
+/api/config/config_database.json
+/api/config/encryption_key.yml

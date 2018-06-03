@@ -1,0 +1,131 @@
+var app      = require('../app'),
+    debug    = require('debug')('us:server'),
+    https    = require('https'),
+    http     = require('http'),
+    cluster  = require('cluster'),
+    numCPUs  = require('os').cpus().length;
+
+if(process.env.US_CPU) {
+    numCPUs = process.env.US_CPU;
+}
+require('../general_init.js');
+
+process.on('uncaughtException', function uncaughtExceptionFunction(e) {
+    helpers.logger.log('Uncaught exception: ' + helpers.general.getErrorAsString(e), helpers.logger.LOG_TYPE_ERROR);
+});
+
+var port = normalizePort(process.env.PORT || '8443');
+if(process.env.US_ENV && process.env.US_ENV == 'dev') {
+    port = 3000;
+}
+if(process.env.US_PROTOCOL && process.env.US_PROTOCOL == 'http') {
+    port = 3000;
+}
+app.set('port', port);
+
+if (cluster.isMaster) {
+    helpers.logger.log('Master ' + process.pid + ' is running', helpers.logger.LOG_TYPE_INFO);
+    for (var i = 0; i < numCPUs; i++) {
+        var worker = cluster.fork({WORKER_INDEX: i});
+        globals.workers.push(worker);
+        globals.workerENV[worker.process.pid] = {WORKER_INDEX: i};
+
+        worker.on('message', function(message) {
+            if (message.type === 'reread') {
+                var params = message.params;
+                helpers.logger.log('message came: reread ', helpers.logger.LOG_TYPE_INFO);
+
+                for (var i = 0; i < numCPUs; i++) {
+                    globals.workers[i].send({type: 'reread', params: params});
+                }
+            } else {
+                helpers.logger.log('type is undefined', helpers.logger.LOG_TYPE_ERROR);
+            }
+        });
+    }
+
+    cluster.on('exit', function(worker, code, signal) {
+        helpers.logger.log('Worker ' + worker.process.pid + ' died (' + (signal || code) + '). restarting...', helpers.logger.LOG_TYPE_ERROR);
+
+        var env = globals.workerENV[worker.process.pid];
+        delete globals.workerENV[worker.process.pid];
+        worker = cluster.fork(env);
+        globals.workers[env.WORKER_INDEX] = worker;
+        globals.workerENV[worker.process.pid] = env;
+    });
+
+} else {
+    helpers.logger.log('Worker started with PID ' + process.pid + '.', helpers.logger.LOG_TYPE_INFO);
+    require('../app.js');
+
+    if( process.env.US_ENV && process.env.US_ENV == 'dev'
+        ||
+        process.env.US_PROTOCOL && process.env.US_PROTOCOL == 'http'
+    ) {
+        server = http.createServer(app);
+    } else {
+        server = https.createServer(globals.httpsOptions, app);
+    }
+
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+
+    process.on('message', function(message) {
+        if (typeof message.type !== 'undefined' && message.type === 'reread') {
+            var type = message.params.type;
+            if (type === 'config') {
+                helpers.general.rereadConfig(function afterRereadConfig() {
+                    helpers.logger.log('Config reading done!', helpers.logger.LOG_TYPE_INFO);
+                }, false);
+            } else {
+                helpers.logger.log('type is undefined', helpers.logger.LOG_TYPE_ERROR);
+            }
+        }
+    });
+}
+
+function normalizePort(val) {
+    const port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        return val;
+    }
+
+    if (port >= 0) {
+        return port;
+    }
+
+    return false;
+}
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    const bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+function onListening() {
+    const addr = server.address();
+    const bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
