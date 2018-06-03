@@ -1,14 +1,15 @@
 'use strict';
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const Transaction = sequelize.define('Transaction', {
         userId: DataTypes.BIGINT,
         subscriptionId: DataTypes.BIGINT,
         receiptId: DataTypes.BIGINT,
         store: DataTypes.STRING,
-        status: DataTypes.STRING
+        status: DataTypes.STRING,
+        originalPurchaseDateMs: DataTypes.STRING
     }, {
         classMethods: {
-            associate: function(models) {
+            associate: function (models) {
                 Transaction.belongsTo(models.User, {
                     onDelete: "CASCADE",
                     foreignKey: {

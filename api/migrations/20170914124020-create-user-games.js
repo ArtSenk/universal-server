@@ -1,12 +1,12 @@
 'use strict';
 module.exports = {
-    up: function (queryInterface, Sequelize) {
-        return queryInterface.createTable('Tokens', {
+    up: function(queryInterface, Sequelize) {
+        return queryInterface.createTable('UserGames', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.BIGINT
+                type: Sequelize.INTEGER
             },
             userId: {
                 type: Sequelize.BIGINT,
@@ -16,7 +16,10 @@ module.exports = {
                     key: 'id'
                 }
             },
-            token: {
+            gameId: {
+                type: Sequelize.STRING
+            },
+            data: {
                 type: Sequelize.STRING
             },
             createdAt: {
@@ -29,7 +32,7 @@ module.exports = {
             }
         });
     },
-    down: function (queryInterface, Sequelize) {
-        return queryInterface.dropTable('Tokens');
+    down: function(queryInterface, Sequelize) {
+        return queryInterface.dropTable('UserGames');
     }
 };

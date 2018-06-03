@@ -1,19 +1,17 @@
 'use strict';
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const User = sequelize.define('User', {
-        phone: DataTypes.STRING,
         email: DataTypes.STRING,
-        username: DataTypes.STRING,
         password: DataTypes.STRING,
+        salt: DataTypes.STRING,
+        username: DataTypes.STRING,
+        isEmailsAllowed: DataTypes.BOOLEAN,
         subscribedSince: DataTypes.DATE,
         subscribedUntil: DataTypes.DATE,
-        salt: DataTypes.STRING,
-        trialDate: DataTypes.DATE,
-        firstSubscribedDate: DataTypes.DATE,
-        facebookId: DataTypes.BIGINT,
+        activityDays: DataTypes.INTEGER
     }, {
         classMethods: {
-            associate: function(models) {
+            associate: function (models) {
                 User.hasMany(models.Transaction, {
                     foreignKey: 'userId',
                     as: 'transactions'
@@ -22,11 +20,6 @@ module.exports = function(sequelize, DataTypes) {
                 User.hasMany(models.Subscription, {
                     foreignKey: 'userId',
                     as: 'subscriptions'
-                });
-
-                User.hasMany(models.UserGames, {
-                    foreignKey: 'userId',
-                    as: 'usergames'
                 });
 
                 User.hasMany(models.Token, {

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-    up: function(queryInterface, Sequelize) {
+    up: function (queryInterface, Sequelize) {
         return queryInterface.createTable('Users', {
             id: {
                 allowNull: false,
@@ -8,13 +8,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.BIGINT
             },
-            phone: {
-                type: Sequelize.STRING
-            },
             email: {
-                type: Sequelize.STRING
-            },
-            username: {
                 type: Sequelize.STRING
             },
             password: {
@@ -23,8 +17,11 @@ module.exports = {
             salt: {
                 type: Sequelize.STRING
             },
-            facebookId: {
-                type: Sequelize.BIGINT
+            username: {
+                type: Sequelize.STRING
+            },
+            isEmailsAllowed: {
+                type: Sequelize.BOOLEAN
             },
             subscribedSince: {
                 type: Sequelize.DATE
@@ -32,11 +29,8 @@ module.exports = {
             subscribedUntil: {
                 type: Sequelize.DATE
             },
-            trialDate: {
-                type: Sequelize.DATE
-            },
-            firstSubscribedDate: {
-                type: Sequelize.DATE
+            activityDays: {
+                type: Sequelize.INTEGER
             },
             createdAt: {
                 allowNull: false,
@@ -48,7 +42,7 @@ module.exports = {
             }
         });
     },
-    down: function(queryInterface, Sequelize) {
+    down: function (queryInterface, Sequelize) {
         return queryInterface.dropTable('Users');
     }
 };

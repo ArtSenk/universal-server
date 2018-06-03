@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-    up: function(queryInterface, Sequelize) {
+    up: function (queryInterface, Sequelize) {
         return queryInterface.createTable('Receipts', {
             id: {
                 allowNull: false,
@@ -19,6 +19,9 @@ module.exports = {
             rawReceipt: {
                 type: Sequelize.STRING(1048575)
             },
+            store: {
+                type: Sequelize.STRING
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE
@@ -29,7 +32,7 @@ module.exports = {
             }
         });
     },
-    down: function(queryInterface, Sequelize) {
+    down: function (queryInterface, Sequelize) {
         return queryInterface.dropTable('Receipts');
     }
 };

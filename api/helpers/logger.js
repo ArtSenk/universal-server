@@ -1,11 +1,8 @@
-var LOG_TYPE_NOTICE = 'noti';
-var LOG_TYPE_INFO = 'info';
-var LOG_TYPE_RESPONSE = 'resp';
-var LOG_TYPE_REQUEST = 'requ';
-var LOG_TYPE_ERROR = 'errm';
-
-var fs = require('fs');
-var dateFormat = require('date-format');
+const LOG_TYPE_NOTICE = 'noti';
+const LOG_TYPE_INFO = 'info';
+const LOG_TYPE_RESPONSE = 'resp';
+const LOG_TYPE_REQUEST = 'requ';
+const LOG_TYPE_ERROR = 'errm';
 
 debugMain = require('../libs/debug');
 
@@ -29,15 +26,13 @@ debugs = {
 };
 
 /**
- *
  * @param message
  * @param type
  * @param issuer (socketId or user)
  */
 function log(message, type, issuer, key) {
-
-    if(issuer) {
-        if(typeof issuer._id != 'undefined') {
+    if (issuer) {
+        if (typeof issuer._id !== 'undefined') {
             // this is user
             var user = issuer;
         } else {
@@ -49,25 +44,29 @@ function log(message, type, issuer, key) {
     consoleLog(message, type, socketId);
 }
 
-
 function consoleLog(message, type) {
-    //if(config.logOn) {
-    if(true) {
+    if (true) {
         type = type || LOG_TYPE_INFO;
-        if(type == LOG_TYPE_RESPONSE) {
+
+        if (type === LOG_TYPE_RESPONSE) {
             message = '<<<________ ' + message;
         }
-        if(type == LOG_TYPE_REQUEST) {
+        if (type === LOG_TYPE_REQUEST) {
             message = '________>>> ' + message;
         }
-        var debug = debugs[type];
-        var index = process.env.WORKER_INDEX;
-        if(typeof index == 'undefined') {
+
+        let debug = debugs[type];
+        let index = process.env.WORKER_INDEX;
+
+        if (typeof index === 'undefined') {
             index = 'm';
         }
         message = process.pid + ',' + index + '| ' + message;
-
         debug(message);
+        if(type === LOG_TYPE_ERROR) {
+            console.log('second time:');
+            console.log(message);
+        }
     }
 }
 

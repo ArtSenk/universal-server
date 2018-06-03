@@ -2,21 +2,24 @@
 
 (function (routeConfig) {
     routeConfig.init = function (app) {
-        // for firing custom error handler
+        const general = require('../routes/general');
+        const userRoutes = require('../routes/user');
+
+        app.use('/', general);
+        app.use(userRoutes);
+
         app.get('*', function(req, res, next) {
-            var err = new Error('Not Found');
+            let err = new Error('Not Found');
             err.status = 404;
             next(err);
         });
 
-        // for firing custom error handler
         app.post('*', function(req, res, next) {
-            var err = new Error('Not Found');
+            let err = new Error('Not Found');
             err.status = 404;
             next(err);
         });
 
-        // custom error handler
         app.use(function (err, req, res, next) {
             if(err.status !== 404) {
                 console.error(err.stack.substr(0, 750));

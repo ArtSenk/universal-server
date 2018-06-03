@@ -1,0 +1,22 @@
+apple:
+    secret: ''
+
+googlePlayStoreAPI:
+    googleAccToken: ''
+    googleRefToken: ''
+    googleClientID: ''
+    googleClientSecret: ''
+
+nodemailer:
+    host: ''
+    user: ''
+    pass: ''
+
+server:
+    minVersion: ''
+
+auth:
+    user: ''
+    password: ''
+
+env: ''

@@ -5,6 +5,7 @@ const express    = require('express'),
 
 const routeConfig = require('./config/route-config.js');
 
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({limit: '5mb', extended: false}));

@@ -1,13 +1,13 @@
 'use strict';
-module.exports = function (sequelize, DataTypes) {
-    var Activities = sequelize.define('Activities', {
+module.exports = function(sequelize, DataTypes) {
+    var UserGames = sequelize.define('UserGames', {
         userId: DataTypes.BIGINT,
-        date: DataTypes.STRING,
+        gameId: DataTypes.STRING,
         data: DataTypes.STRING
     }, {
         classMethods: {
-            associate: function (models) {
-                Activities.belongsTo(models.User, {
+            associate: function(models) {
+                UserGames.belongsTo(models.User, {
                     onDelete: "CASCADE",
                     foreignKey: {
                         allowNull: false
@@ -16,5 +16,5 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     });
-    return Activities;
+    return UserGames;
 };
