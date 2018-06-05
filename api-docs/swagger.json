@@ -1,14 +1,631 @@
 {
   "info": {
-    "title": "",
+    "title": "Universal Server",
     "version": "0.0.1",
-    "description": ""
+    "description": "Universal Server API"
   },
-  "host": "",
-  "schemes": ["https"],
+  "host": "localhost",
+  "schemes": [
+    "http"
+  ],
   "basePath": "/",
   "swagger": "2.0",
-  "paths": {},
+  "paths": {
+    "/:api_version/user/exists": {
+      "post": {
+        "description": "Checking the user in the database",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User email",
+            "required": true,
+            "type": "string",
+            "format": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User exists or does not exists",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "exists": {
+                "description": "true/false",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "Some server problems"
+          }
+        }
+      }
+    },
+    "/:api_version/user/signup": {
+      "post": {
+        "description": "User registration",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User email",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User password",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful registration",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "userExists": {
+                "description": "false",
+                "type": "boolean"
+              },
+              "token": {
+                "description": "tokenString",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/signin": {
+      "post": {
+        "description": "Login",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User email",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User password",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "correctPassword": {
+                "description": "true",
+                "type": "boolean"
+              },
+              "token": {
+                "description": "tokenString",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/logout": {
+      "get": {
+        "description": "User logout",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful logout",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "tokenDestroyed": {
+                "description": "true",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/profile": {
+      "post": {
+        "description": "Updating user profile",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "data include isNotificationsAllowed, isEmailsAllowed, battery, lastWordSearch",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "updatedProfile": {
+                "description": "true",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      },
+      "get": {
+        "description": "Get user profile",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile received",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "userData": {
+                "description": "toReturn",
+                "type": "object"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/subscribe": {
+      "post": {
+        "description": "Create user subscribe",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "receipt",
+            "in": "query",
+            "description": "Receipt from the store",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "description": "apple or google",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User received a subscription",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "newSubscription": {
+                "description": "true/false",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/activity": {
+      "post": {
+        "description": "Create user activity per day",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Activity day",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data on user activity per day",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User activity per day added to database",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "activityCreated": {
+                "description": "true",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/activities": {
+      "get": {
+        "description": "Get user activities",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Starting day from which you want to return the activity of the user",
+            "required": true,
+            "type": "json"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for returning user activity",
+            "required": false,
+            "type": "json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "activities": {
+                "description": "dataArray",
+                "type": "array"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/game/progress": {
+      "post": {
+        "description": "Keeps the progress of users in games.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "gameId",
+            "in": "query",
+            "description": "Type of game",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Progress of users in games",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User's gameplay is added to the database",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "added": {
+                "description": "true",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/reset_password": {
+      "post": {
+        "description": "Reset user password",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User email",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User password reset",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "newPassword": {
+                "description": "true",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/check_password": {
+      "get": {
+        "description": "Checking the entered user password with the password in the database.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User password",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "correctPassword": {
+                "description": "true/false",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/user/password": {
+      "post": {
+        "description": "Change the old user password to new password.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Authorization token",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "oldPassword",
+            "in": "query",
+            "description": "Old user password",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          },
+          {
+            "name": "newPassword",
+            "in": "query",
+            "description": "New user password",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User password updated.",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "passwordUpdated": {
+                "description": "true/false",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/server": {
+      "get": {
+        "description": "Compatibility check",
+        "parameters": [
+          {
+            "name": "clientVersion",
+            "in": "query",
+            "description": "Version of the application on the client",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "correctVersion": {
+                "description": "true/false",
+                "type": "boolean"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/version": {
+      "get": {
+        "description": "Get server version",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "version": {
+                "description": "server version",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/:api_version/reread/:type": {
+      "get": {
+        "description": "Reread the file by type",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "ex. 'config'",
+            "required": true,
+            "type": "string",
+            "format": "name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "status": {
+                "description": "success",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    }
+  },
   "definitions": {},
   "responses": {},
   "parameters": {},

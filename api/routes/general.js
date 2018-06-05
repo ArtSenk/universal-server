@@ -35,7 +35,7 @@ router.all('/:api_version/server', controllers.general.checkVersionCompatibility
  * @swagger
  * /reread/:type:
  *   get:
- *     description: Reread the file by type. Example request 'https://user:password@my.iridescent.studio:8443/reread/config'
+ *     description: Reread the file by type'
  *     parameters: [type (ex. 'config')]
  *     responses:
  *       200:
